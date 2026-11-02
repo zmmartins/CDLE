@@ -59,3 +59,5 @@ htmlcov/
 # Do not globally ignore PDFs, CSVs, SQL, Markdown, JSON, or AI logs.
 # Small reproducible benchmark summaries, reports, source, and evidence
 # can be committed on purpose; inspect size/privacy before doing so.
+# Lab 4 test fixture (must be version-controlled)
+!/lab4/tests/sample.log
