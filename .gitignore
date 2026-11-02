@@ -61,3 +61,6 @@ htmlcov/
 # can be committed on purpose; inspect size/privacy before doing so.
 # Lab 4 test fixture (must be version-controlled)
 !/lab4/tests/sample.log
+# CDLE Python environment and compatibility link
+/cdle_venv/
+/venv
