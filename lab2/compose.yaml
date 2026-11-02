@@ -1,0 +1,102 @@
+# Lab 2 cluster on one machine:
+#   w1..w8     query workers, at most 1 CPU and 1 GB of RAM each
+#   kv1..kv3   replicas of the key-value store of Part C
+#   client     where you run partition.py, coordinator.py and kv_client.py (2 CPUs, 2 GB)
+#
+# Ports are published on this machine only (127.0.0.1). For the optional two-machine
+# experiment, start with LAB2_BIND=0.0.0.0 (see Appendix B of the handout).
+name: lab2
+
+x-node: &node
+  image: cdle-lab2
+  build: .
+  working_dir: /lab
+  volumes:
+    - .:/lab:ro
+    - data:/data:ro
+  init: true
+  stop_grace_period: 1s
+
+x-worker: &worker
+  <<: *node
+  command: python worker.py
+  cpus: 1.0
+  mem_limit: 1g
+
+x-kv: &kv
+  <<: *node
+  command: python kv_replica.py
+  cpus: 0.5
+  mem_limit: 128m
+
+services:
+  w1:
+    <<: *worker
+    container_name: w1
+    hostname: w1
+    ports: ["${LAB2_BIND:-127.0.0.1}:8101:8100"]
+  w2:
+    <<: *worker
+    container_name: w2
+    hostname: w2
+    ports: ["${LAB2_BIND:-127.0.0.1}:8102:8100"]
+  w3:
+    <<: *worker
+    container_name: w3
+    hostname: w3
+    ports: ["${LAB2_BIND:-127.0.0.1}:8103:8100"]
+  w4:
+    <<: *worker
+    container_name: w4
+    hostname: w4
+    ports: ["${LAB2_BIND:-127.0.0.1}:8104:8100"]
+  w5:
+    <<: *worker
+    container_name: w5
+    hostname: w5
+    ports: ["${LAB2_BIND:-127.0.0.1}:8105:8100"]
+  w6:
+    <<: *worker
+    container_name: w6
+    hostname: w6
+    ports: ["${LAB2_BIND:-127.0.0.1}:8106:8100"]
+  w7:
+    <<: *worker
+    container_name: w7
+    hostname: w7
+    ports: ["${LAB2_BIND:-127.0.0.1}:8107:8100"]
+  w8:
+    <<: *worker
+    container_name: w8
+    hostname: w8
+    ports: ["${LAB2_BIND:-127.0.0.1}:8108:8100"]
+
+  kv1:
+    <<: *kv
+    container_name: kv1
+    hostname: kv1
+  kv2:
+    <<: *kv
+    container_name: kv2
+    hostname: kv2
+  kv3:
+    <<: *kv
+    container_name: kv3
+    hostname: kv3
+
+  client:
+    <<: *node
+    container_name: client
+    hostname: client
+    command: sleep infinity
+    cpus: 2.0
+    mem_limit: 2g
+    volumes:
+      - .:/lab:ro
+      - data:/data
+      - ../parquet:/parquet:ro      # the Parquet folders of Lab 1 ($T/parquet)
+
+# The partitioned data lives in a Docker volume, not in a folder of your machine: on macOS
+# and Windows, containers read shared folders slowly and get in each other's way.
+volumes:
+  data:

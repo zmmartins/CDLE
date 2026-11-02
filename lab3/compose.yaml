@@ -1,0 +1,95 @@
+# Lab 3 on one machine:
+#   obj        the object store's front-end: the only service clients talk to (1 CPU, 768 MB)
+#   s1..s6     its storage nodes: s1-s4 hold data chunks, s5-s6 parity chunks (0.5 CPU, 256 MB each)
+#   client     where you run the lab's scripts: DuckDB, the format benchmark, the obj client (2 CPUs, 2 GB)
+#
+# The front-end's port is published on this machine only (127.0.0.1:8200), so that you can also
+# reach it from a browser or with curl. The shards are not published.
+name: lab3
+
+x-node: &node
+  image: cdle-lab3
+  build: .
+  working_dir: /lab
+  init: true
+  stop_grace_period: 1s
+
+x-shard: &shard
+  <<: *node
+  command: python obj_shard.py
+  cpus: 0.5
+  mem_limit: 256m
+
+services:
+  obj:
+    <<: *node
+    container_name: obj
+    hostname: obj
+    command: python obj_frontend.py
+    cpus: 1.0
+    mem_limit: 768m
+    environment:
+      # give the large buffers of each request back to the system when the request ends
+      MALLOC_ARENA_MAX: "2"
+      MALLOC_MMAP_THRESHOLD_: "1048576"
+    ports: ["127.0.0.1:8200:8200"]
+    volumes:
+      - .:/lab:ro
+      - meta:/meta
+
+  s1:
+    <<: *shard
+    container_name: s1
+    hostname: s1
+    volumes: [".:/lab:ro", "s1:/store"]
+  s2:
+    <<: *shard
+    container_name: s2
+    hostname: s2
+    volumes: [".:/lab:ro", "s2:/store"]
+  s3:
+    <<: *shard
+    container_name: s3
+    hostname: s3
+    volumes: [".:/lab:ro", "s3:/store"]
+  s4:
+    <<: *shard
+    container_name: s4
+    hostname: s4
+    volumes: [".:/lab:ro", "s4:/store"]
+  s5:
+    <<: *shard
+    container_name: s5
+    hostname: s5
+    volumes: [".:/lab:ro", "s5:/store"]
+  s6:
+    <<: *shard
+    container_name: s6
+    hostname: s6
+    volumes: [".:/lab:ro", "s6:/store"]
+
+  client:
+    <<: *node
+    container_name: client
+    hostname: client
+    command: sleep infinity
+    cpus: 2.0
+    mem_limit: 2g
+    environment:
+      DUCKDB_THREADS: "2"
+    volumes:
+      - .:/lab:ro
+      - data:/data
+      - ../parquet:/parquet:ro      # the Parquet folders of Lab 1 ($T/parquet)
+
+# Every node keeps its data in its own Docker volume (its "disk"), not in a folder of your machine:
+# on macOS and Windows, containers read shared folders slowly.
+volumes:
+  meta:
+  s1:
+  s2:
+  s3:
+  s4:
+  s5:
+  s6:
+  data:

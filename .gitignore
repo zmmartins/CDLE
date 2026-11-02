@@ -1,0 +1,61 @@
+# Operating system / editors
+.DS_Store
+._*
+.vscode/*.log
+.idea/
+*.swp
+*~
+
+# Python, environments, tools
+venv/
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+.coverage
+htmlcov/
+
+# Credentials and machine-specific settings
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Course runtime: generated/large data, third-party TPC-DS licensed kit
+/DSGen-software-code-*/
+/data/
+/parquet/
+/queries/
+/query_templates/
+/tpcds/
+/cache/
+/tmp/
+/logs/
+
+# Data formats and DB engines: accidental copies anywhere
+*.dat
+*.parquet
+*.avro
+*.orc
+*.duckdb
+*.sqlite
+*.sqlite3
+
+# Docker runtime state and large output artifacts
+**/spark-warehouse/
+**/metastore_db/
+**/derby.log
+*.log
+/project/data/
+/project/output/
+/project/artifacts/
+/report/dist/
+/dist/
+
+# Do not globally ignore PDFs, CSVs, SQL, Markdown, JSON, or AI logs.
+# Small reproducible benchmark summaries, reports, source, and evidence
+# can be committed on purpose; inspect size/privacy before doing so.

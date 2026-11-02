@@ -1,0 +1,16 @@
+{
+  "lab": "lab3",
+  "sections": [
+    "Machine and Docker",
+    "Part A",
+    "Part B",
+    "Part C",
+    "AI session",
+    "Limits"
+  ],
+  "ai_sessions": [
+    "Session 03a",
+    "Session 03b"
+  ],
+  "code": []
+}
