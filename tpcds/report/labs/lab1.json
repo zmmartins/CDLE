@@ -1,0 +1,16 @@
+{
+  "lab": "lab1",
+  "sections": [
+    "Machine",
+    "Pipeline",
+    "Data model",
+    "Query fixes",
+    "Experiment A",
+    "Experiment B",
+    "From 1GB to 10GB",
+    "Optional parts",
+    "Prediction for Lab 2"
+  ],
+  "ai_sessions": [],
+  "code": []
+}

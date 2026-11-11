@@ -1,66 +1,28 @@
-# Operating system / editors
-.DS_Store
-._*
-.vscode/*.log
-.idea/
-*.swp
-*~
+# Ambiente de execução: derivados ou dados não versionáveis
+/tpcds/cdle_venv/
+/tpcds/.venv/
+/tpcds/DSGen-software-code-4.0.0/
+/tpcds/data/
+/tpcds/parquet/
+/tpcds/query_templates/
+/tpcds/queries/
+/tpcds/results/
 
-# Python, environments, tools
-venv/
-.venv/
+# Artefactos locais e caches
+.DS_Store
 __pycache__/
 *.py[cod]
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
-.ipynb_checkpoints/
-.coverage
-htmlcov/
-
-# Credentials and machine-specific settings
+*.duckdb
+*.duckdb.wal
+*.db
+*.zip
 .env
 .env.*
 !.env.example
-*.pem
-*.key
 
-# Course runtime: generated/large data, third-party TPC-DS licensed kit
-/DSGen-software-code-*/
-/data/
-/parquet/
-/queries/
-/query_templates/
-/tpcds/
-/cache/
-/tmp/
-/logs/
-
-# Data formats and DB engines: accidental copies anywhere
-*.dat
-*.parquet
-*.avro
-*.orc
-*.duckdb
-*.sqlite
-*.sqlite3
-
-# Docker runtime state and large output artifacts
-**/spark-warehouse/
-**/metastore_db/
-**/derby.log
-*.log
-/project/data/
-/project/output/
-/project/artifacts/
-/report/dist/
-/dist/
-
-# Do not globally ignore PDFs, CSVs, SQL, Markdown, JSON, or AI logs.
-# Small reproducible benchmark summaries, reports, source, and evidence
-# can be committed on purpose; inspect size/privacy before doing so.
-# Lab 4 test fixture (must be version-controlled)
-!/lab4/tests/sample.log
-# CDLE Python environment and compatibility link
-/cdle_venv/
-/venv
+# Logs temporários (preservar fixtures *.log dos testes oficiais)
+/tpcds/*/logs/
+/tpcds/*/tmp/

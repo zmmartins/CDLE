@@ -1,0 +1,80 @@
+# Lab 5 on one machine: the Spark standalone cluster of Lab 4, with the same image (cdle-lab4).
+#   spark-master   the cluster manager: knows the workers and lends their cores to applications (UI: localhost:8080)
+#   worker1..4     one executor each: 1 core and 768 MB of heap for Spark, the rest for the worker and Python
+#   history        the history server: shows the jobs of finished applications (UI: localhost:18080)
+#   client         where you run the lab's scripts; the driver of every Spark job runs here (UI: localhost:4040)
+#
+# Memory limits add up to 7.75 GB: Docker needs 8 GB (see section 0.2 of the handout).
+# Every container sees the same data at the same paths: the executors read and write the files themselves.
+# Lab 4 has containers with the same names: stop it first (docker compose -f ~/tpcds/lab4/compose.yaml down).
+name: lab5
+
+x-node: &node
+  image: cdle-lab4
+  build: .
+  working_dir: /lab
+  init: true
+  stop_grace_period: 2s
+  environment: &env
+    SPARK_DAEMON_MEMORY: 256m        # the heap of the master, worker and history server processes
+    SPARK_NO_DAEMONIZE: "1"
+  volumes: &vols
+    - .:/lab:ro
+    - data:/data
+    - ../parquet:/parquet:ro         # the Parquet folders of Lab 1 ($T/parquet)
+
+x-worker: &worker
+  <<: *node
+  depends_on: [spark-master]
+  command: spark-class org.apache.spark.deploy.worker.Worker --cores 1 --memory 768m spark://spark-master:7077
+  cpus: 1.0
+  mem_limit: 1280m
+
+services:
+  spark-master:
+    <<: *node
+    container_name: spark-master
+    hostname: spark-master
+    command: spark-class org.apache.spark.deploy.master.Master --host spark-master
+    cpus: 0.5
+    mem_limit: 384m
+    environment:
+      <<: *env
+      SPARK_PUBLIC_DNS: localhost
+    ports: ["127.0.0.1:8080:8080"]
+
+  worker1: { <<: *worker, container_name: worker1, hostname: worker1 }
+  worker2: { <<: *worker, container_name: worker2, hostname: worker2 }
+  worker3: { <<: *worker, container_name: worker3, hostname: worker3 }
+  worker4: { <<: *worker, container_name: worker4, hostname: worker4 }
+
+  history:
+    <<: *node
+    container_name: history
+    hostname: history
+    command: sh -c "mkdir -p /data/events && exec spark-class org.apache.spark.deploy.history.HistoryServer"
+    cpus: 0.5
+    mem_limit: 384m
+    ports: ["127.0.0.1:18080:18080"]
+
+  client:
+    <<: *node
+    container_name: client
+    hostname: client
+    command: sh -c "mkdir -p /data/events && exec sleep infinity"
+    cpus: 2.0
+    mem_limit: 2g
+    environment:
+      <<: *env
+      SPARK_PUBLIC_DNS: localhost
+      LAB5_WORKERS: "4"
+    ports: ["127.0.0.1:4040:4040"]
+    volumes:
+      - .:/lab:ro
+      - data:/data
+      - ../parquet:/parquet:ro
+      - ../report/evidence/lab5:/evidence   # the lab's scripts also write their output here (report kit)
+
+# The outputs and the event logs live in a Docker volume (the cluster's shared "disk").
+volumes:
+  data:

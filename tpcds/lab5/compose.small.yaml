@@ -1,0 +1,11 @@
+# The small profile, for a laptop with 8 GB of memory (Docker with 4 CPUs and 4 GB): only worker1 and worker2 start.
+# Use it on top of compose.yaml, in the dc shortcut of the handout:
+#   dc() { docker compose -f $T/lab5/compose.yaml -f $T/lab5/compose.small.yaml "$@"; }
+# Run the jobs at SF1 (--sf 1). Your times will not be comparable with the expected values of the handout.
+services:
+  worker3: { profiles: ["four-workers"] }
+  worker4: { profiles: ["four-workers"] }
+  client:
+    mem_limit: 1536m
+    environment:
+      LAB5_WORKERS: "2"

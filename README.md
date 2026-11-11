@@ -1,58 +1,48 @@
 # CDLE — Computação de Dados em Larga Escala
 
-ISEL · MEIM · 2026/27
+Este é o diretório **raiz da unidade curricular**. Slides, apontamentos, projeto, laboratórios, ambientes e dados ficam todos aqui. A reorganização começa do zero: não foram importadas soluções, medições ou scripts antigos feitos com IA.
 
-A single Git repository for lectures, study notes, reproducible laboratory code, the weekly laboratory portfolio, and the semester project. The layout deliberately preserves the `~/tpcds` paths expected by the instructor's handouts.
+## Organização
 
-## Quick navigation
-
-| Where | Purpose |
-|---|---|
-| `materials/slides/` | Original lecture decks, consistently named by week |
-| `materials/lab-handouts/` | Original Markdown lab instructions |
-| `materials/references/` | Background documents from Moodle |
-| `docs/study/` | Your lecture notes, concept explanations, and revision questions |
-| `docs/labs/` | Personal lab notes and experiment summaries |
-| `starter/` | Lab 1 starter scripts (the expected runtime path) |
-| `lab2/`, `lab3/`, `lab4/` | Lab source code, tests, Docker and AI session files |
-| `report/` | The instructor's root-level lab-report kit, reports, AI logs and evidence |
-| `project/` | Semester project, separate from weekly lab work |
-| `results/` | Reproducible, small measurement summaries (only when needed) |
-| `data/`, `parquet/`, `venv/`, Docker volumes | Local runtime data; do not commit |
-
-## Environment: one canonical copy
-
-Keep the canonical version of the code in this folder. If the original handouts expect `~/tpcds` and that path **does not already exist**, create a symlink:
-
-```sh
-ln -s "$(pwd -P)" "$HOME/tpcds"
+```text
+CDLE/
+├── README.md
+├── .gitignore
+├── materials/
+│   ├── slides/         # Slides oficiais por semana
+│   ├── handouts/       # Enunciados originais dos Labs 1–4
+│   └── references/     # Referências facultadas pela cadeira
+├── notes/
+│   ├── theory/         # Apontamentos próprios por semana
+│   └── labs/           # Diário de cada laboratório
+├── project/            # Projeto semestral separado dos labs
+└── tpcds/              # Tudo o que for executado nos Labs 1–4
+    ├── README.md
+    └── [pastas adicionadas durante os labs]
 ```
 
-Run that command only when standing in the CDLE root. If `~/tpcds` already exists, **inspect it first** instead of overwriting, deleting, or blindly linking anything.
+## Porquê `tpcds/` dentro de `CDLE/`?
 
-Then the handouts' expected commands (`export T=~/tpcds`, `docker compose -f "$T/lab4/compose.yaml" ...`) use this repository without changing the course's Docker source paths.
+Os quatro handouts pressupõem que o kit, os starters, os dados e os relatórios ficam lado a lado em `~/tpcds`. Aqui **essa pasta fica em `CDLE/tpcds`**. Os materiais oficiais não foram alterados: ao executares os comandos, substitui `~/tpcds` pelo caminho real de `CDLE/tpcds`, e define a variável `T` para esse caminho.
 
-Note: Lab 1 builds a third-party, licensed TPC-DS kit at `$T/DSGen-software-code-4.0.0`; keep that kit outside Git. Lab 1 produces SF1/SF10 Parquet data reused by Labs 2–4. The report kit in `$T/report/` is also part of the expected lab runtime structure.
+Em cada novo terminal, a partir da raiz `CDLE`:
 
-## Git policy
-
-Commit lecture notes, original handouts (subject to permission to redistribute), code, tests, report sources, small datasets used as test fixtures, AI disclosure logs, and selected report evidence. Never commit generated SF1/SF10 data, private information, credentials, environment folders, or licensed TPC-DS binaries. Keep the remote **private** unless course materials may legally be redistributed.
-
-Example commit cadence:
-
-```sh
-git add docs/study/week-02-distributed-principles.md
-git commit -m "docs(study): summarize partitioning and replication"
-
-git add lab4/jobs.py lab4/tests/
-git commit -m "feat(lab4): add product-view mapper and tests"
-
-git add report/report_lab4.md report/ai-log-lab4.md
-git commit -m "docs(lab4): draft report and disclose AI use"
+```bash
+cd '/caminho/para/CDLE'
+export T="$PWD/tpcds"
+export PY="$T/cdle_venv/bin/python"  # só funciona depois de criares venv
 ```
 
-## Important
+**Nota:** os caminhos do kit TPC-DS são sensíveis ao comprimento e a espaços. Convém que o caminho completo de `CDLE/tpcds` seja curto, sem espaços, e verificar os scripts dos starter packs quando forem instalados (podem conter caminhos literais `~/tpcds`). Não criar pastas de trabalho fora de `CDLE`.
 
-The instructor provides a separate `report_kit.zip` / submission instructions. Do not invent their files or run packaging without following the actual kit. In particular, Lab 4 expects its report support files under `~/tpcds/report/`.
+## Método de aprendizagem
 
-See `docs/course/roadmap.md` and `docs/course/assessment.md` for navigation and assessment weights.
+1. Recuperar os starter packs e kits oficiais, não os scripts antigos já resolvidos.
+2. Fazer os exercícios por ordem, escrevendo ou modificando o código por conta própria.
+3. Antes de correr uma experiência, prever o resultado; depois medir e explicar.
+4. Manter as notas próprias em `notes/labs/` e as evidências/relatórios exigidos no `tpcds/report/` oficial.
+5. Para componentes que requerem IA, seguir o protocolo da cadeira, declarar a utilização e verificar os resultados.
+
+## Git e ficheiros pesados
+
+O `.gitignore` exclui o kit proprietário TPC-DS, os ambientes virtuais, os dados e resultados volumosos/regeneráveis dentro de `tpcds`. Os materiais da cadeira e starter packs podem estar sujeitos a restrições de partilha: mantém o repositório privado e confirma as regras de publicação. Evita adicionar arquivos e dados gerados.

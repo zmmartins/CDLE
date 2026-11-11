@@ -1,0 +1,17 @@
+{
+  "lab": "lab5",
+  "sections": [
+    "Machine and Docker",
+    "Job 1",
+    "Job 2",
+    "Job 3",
+    "Discussion",
+    "Limits"
+  ],
+  "ai_sessions": [
+    "Session 05"
+  ],
+  "code": [
+    "../lab5/jobs/"
+  ]
+}

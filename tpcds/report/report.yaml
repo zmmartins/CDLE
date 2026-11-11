@@ -1,0 +1,13 @@
+# The common format of every CDLE lab report. Do not change it: the 4-page limit is measured with it.
+from: markdown
+to: typst
+pdf-engine: typst
+include-in-header:
+  - report.typ
+variables:
+  papersize: a4
+  fontsize: 11pt
+  margin:
+    x: 2cm
+    y: 2cm
+  section-numbering: "1."

@@ -1,0 +1,17 @@
+{
+  "lab": "lab2",
+  "sections": [
+    "Machine and Docker",
+    "Part A",
+    "Part B",
+    "Part C",
+    "AI session",
+    "Limits"
+  ],
+  "ai_sessions": [
+    "Session 02"
+  ],
+  "code": [
+    "../lab2/plans.py"
+  ]
+}
